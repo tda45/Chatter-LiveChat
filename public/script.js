@@ -1,19 +1,18 @@
 const socket = io();
 
+const loginScreen = document.getElementById("loginScreen");
+const chatScreen = document.getElementById("chatScreen");
+
 const usernameInput = document.getElementById("username");
 const joinBtn = document.getElementById("joinBtn");
 
+const chat = document.getElementById("chat");
 const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("sendBtn");
 
-const chat = document.getElementById("chat");
-const typingDiv = document.getElementById("typing");
+const currentUser = document.getElementById("currentUser");
 
 let username = null;
-
-// BAŞTA KAPALI
-messageInput.disabled = true;
-sendBtn.disabled = true;
 
 joinBtn.onclick = () => {
     const name = usernameInput.value.trim();
@@ -23,13 +22,13 @@ joinBtn.onclick = () => {
     }
 
     username = name;
+    currentUser.textContent = username;
+
     socket.emit("join", username);
 
-    document.querySelector(".top-bar").classList.add("hidden");
-    document.querySelector(".input-bar").classList.remove("hidden");
+    loginScreen.classList.add("hidden");
+    chatScreen.classList.remove("hidden");
 
-    messageInput.disabled = false;
-    sendBtn.disabled = false;
     messageInput.focus();
 };
 
@@ -40,8 +39,6 @@ messageInput.addEventListener("keydown", (e) => {
 });
 
 function sendMessage() {
-    if (!username) return;
-
     const text = messageInput.value.trim();
     if (!text) return;
 

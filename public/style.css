@@ -4,60 +4,72 @@
 }
 
 body {
+    margin: 0;
     background: #0b0b0b;
+    color: white;
+    height: 100vh;
+}
+
+/* LOGIN */
+.login-screen {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    color: white;
 }
 
-.chat-box {
-    width: 380px;
-    height: 550px;
-    background: #111;
+.login-box {
+    background: #140000;
+    padding: 40px;
     border-radius: 10px;
+    border: 2px solid darkred;
+    text-align: center;
+    width: 300px;
+}
+
+.login-box h1 {
+    margin-bottom: 20px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    background: darkred;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* CHAT */
+.chat-screen {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    border: 2px solid #8b0000;
+    height: 100vh;
 }
 
-.top-bar, .input-bar {
-    display: flex;
-    padding: 10px;
+.header {
     background: #1a0000;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid darkred;
 }
 
-.top-bar input,
-.input-bar input {
+.chat-area {
     flex: 1;
-    padding: 8px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-}
-
-.top-bar button,
-.input-bar button {
-    margin-left: 8px;
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    background: darkred;
-    color: white;
-    border-radius: 5px;
-}
-
-.chat {
-    flex: 1;
-    padding: 10px;
+    padding: 15px;
     overflow-y: auto;
 }
 
 .message {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .message .user {
@@ -71,10 +83,26 @@ body {
     margin-bottom: 6px;
 }
 
-.typing {
-    font-size: 12px;
-    padding: 4px 10px;
-    color: #ff4d4d;
+.input-bar {
+    display: flex;
+    padding: 15px;
+    background: #1a0000;
+    border-top: 1px solid darkred;
+}
+
+.input-bar input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+}
+
+.input-bar button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    background: darkred;
+    border: none;
+    color: white;
+    cursor: pointer;
 }
 
 .hidden {

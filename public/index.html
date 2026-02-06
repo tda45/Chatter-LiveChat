@@ -8,20 +8,29 @@
 </head>
 <body>
 
-<div class="chat-box">
-
-    <div class="top-bar">
+<!-- GİRİŞ EKRANI -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <h1>Chatter LiveChat</h1>
         <input id="username" placeholder="Kullanıcı adı">
-        <button id="joinBtn">✔</button>
+        <button id="joinBtn">Giriş Yap</button>
     </div>
+</div>
 
-    <div id="chat" class="chat"></div>
-    <div id="typing" class="typing"></div>
+<!-- SOHBET EKRANI -->
+<div id="chatScreen" class="chat-screen hidden">
 
-    <div class="input-bar hidden">
+    <header class="header">
+        <span>🔥 Chatter LiveChat</span>
+        <span id="currentUser"></span>
+    </header>
+
+    <main id="chat" class="chat-area"></main>
+
+    <footer class="input-bar">
         <input id="message" placeholder="Mesaj yaz...">
         <button id="sendBtn">Gönder</button>
-    </div>
+    </footer>
 
 </div>
 
