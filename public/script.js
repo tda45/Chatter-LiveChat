@@ -10,9 +10,8 @@ const chat = document.getElementById("chat");
 const typingDiv = document.getElementById("typing");
 
 let username = null;
-let typingTimeout = null;
+let typingTimer = null;
 
-// GİRİŞ
 joinBtn.onclick = () => {
     const name = usernameInput.value.trim();
     if (!name) return alert("Kullanıcı adı gir!");
@@ -24,18 +23,17 @@ joinBtn.onclick = () => {
     document.querySelector(".input-bar").classList.remove("hidden");
 };
 
-// MESAJ GÖNDER
 sendBtn.onclick = sendMessage;
+
 messageInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendMessage();
 });
 
-// YAZIYOR…
 messageInput.addEventListener("input", () => {
     socket.emit("typing");
 
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => {
         socket.emit("stopTyping");
     }, 1000);
 });
@@ -49,25 +47,22 @@ function sendMessage() {
     socket.emit("stopTyping");
 }
 
-// CHAT MESAJI
 socket.on("chat", (data) => {
-    addMessage(
-        `[${data.time}] `,
-        `${data.user}: `,
-        data.text
-    );
+    const div = document.createElement("div");
+    div.className = "message";
+    div.innerHTML = `<span class="user">[${data.time}] ${data.user}:</span> ${data.text}`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
 });
 
-// SİSTEM MESAJI
 socket.on("system", (data) => {
     const div = document.createElement("div");
-    div.className = "message system";
+    div.className = "system";
     div.textContent = `[${data.time}] ${data.text}`;
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
 });
 
-// YAZIYOR…
 socket.on("typing", (user) => {
     typingDiv.textContent = `🔴 ${user} yazıyor...`;
 });
@@ -75,17 +70,3 @@ socket.on("typing", (user) => {
 socket.on("stopTyping", () => {
     typingDiv.textContent = "";
 });
-
-function addMessage(time, user, text) {
-    const div = document.createElement("div");
-    div.className = "message";
-
-    div.innerHTML = `
-        <span class="time">${time}</span>
-        <span class="user">${user}</span>
-        ${text}
-    `;
-
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-}

@@ -2,24 +2,34 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Chatter Live Chat (Made By Tda_45)</title>
-
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon.png">
-
+    <title>Chatter-LiveChat</title>
+    <link rel="icon" href="/icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="login">
-    <input id="usernameInput" placeholder="Kullanıcı adın">
+<div class="top-bar">
+    <input
+        type="text"
+        id="username"
+        placeholder="Kullanıcı adını gir"
+        autocomplete="off"
+    >
     <button id="joinBtn">✔</button>
 </div>
 
-<div id="chat" class="chat hidden"></div>
+<div class="chat" id="chat"></div>
 
-<div class="input-bar hidden" id="inputBar">
-    <input id="messageInput" placeholder="Mesaj yaz... (/me güler)">
-    <button id="sendBtn">Gönder</button>
+<div id="typing" class="system"></div>
+
+<div class="input-bar hidden">
+    <input
+        type="text"
+        id="message"
+        placeholder="Mesaj yaz..."
+        autocomplete="off"
+    >
+    <button id="sendBtn">➤</button>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

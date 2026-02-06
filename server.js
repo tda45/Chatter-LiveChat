@@ -8,8 +8,8 @@ const io = new Server(server);
 
 app.use(express.static("public"));
 
-const users = {};        // socket.id -> username
-const lastMessage = {}; // flood kontrolü
+const users = {};
+const lastMessage = {};
 
 io.on("connection", (socket) => {
 
@@ -18,15 +18,13 @@ io.on("connection", (socket) => {
 
         io.emit("system", {
             text: `🔴 ${username} sohbete katıldı`,
-            time: getTime()
+            time: time()
         });
     });
 
     socket.on("typing", () => {
         const user = users[socket.id];
-        if (user) {
-            socket.broadcast.emit("typing", user);
-        }
+        if (user) socket.broadcast.emit("typing", user);
     });
 
     socket.on("stopTyping", () => {
@@ -38,12 +36,10 @@ io.on("connection", (socket) => {
         if (!user) return;
 
         const now = Date.now();
-
-        // FLOOD KORUMASI (2 saniye)
         if (lastMessage[socket.id] && now - lastMessage[socket.id] < 2000) {
             socket.emit("system", {
                 text: "⚠️ Çok hızlı yazıyorsun",
-                time: getTime()
+                time: time()
             });
             return;
         }
@@ -53,7 +49,7 @@ io.on("connection", (socket) => {
         io.emit("chat", {
             user,
             text: msg,
-            time: getTime()
+            time: time()
         });
     });
 
@@ -62,16 +58,15 @@ io.on("connection", (socket) => {
         if (user) {
             io.emit("system", {
                 text: `🔴 ${user} sohbetten ayrıldı`,
-                time: getTime()
+                time: time()
             });
             delete users[socket.id];
         }
     });
 });
 
-function getTime() {
-    const d = new Date();
-    return d.toLocaleTimeString("tr-TR", {
+function time() {
+    return new Date().toLocaleTimeString("tr-TR", {
         hour: "2-digit",
         minute: "2-digit"
     });
