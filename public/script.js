@@ -31,7 +31,6 @@ messageInput.addEventListener("keydown", (e) => {
 
 messageInput.addEventListener("input", () => {
     socket.emit("typing");
-
     clearTimeout(typingTimer);
     typingTimer = setTimeout(() => {
         socket.emit("stopTyping");
