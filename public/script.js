@@ -8,87 +8,100 @@ const usernameInput = document.getElementById("usernameInput");
 const joinBtn = document.getElementById("joinBtn");
 const inputBar = document.getElementById("inputBar");
 
+const gifBox = document.getElementById("gifSuggestions");
+
 let username = null;
 
-/* 🔒 JOIN */
+/* ✅ JOIN FIX (Guest bug yok) */
 joinBtn.onclick = () => {
     const name = usernameInput.value.trim();
-    if (!name) {
-        alert("Kullanıcı adı gir!");
-        return;
-    }
+    if (!name) return alert("Kullanıcı adı gir");
 
     username = name;
+
     chat.classList.remove("hidden");
     inputBar.classList.remove("hidden");
+
     usernameInput.disabled = true;
     joinBtn.disabled = true;
 
     addSystemMessage(`👋 ${username} sohbete katıldı`);
 };
 
-/* ✉️ SEND */
+/* SEND */
 sendBtn.onclick = sendMessage;
-messageInput.addEventListener("keypress", e => {
+messageInput.addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
 });
 
-function sendMessage() {
-    if (!username) return;
+/* 🎞️ /gif AUTOCOMPLETE */
+messageInput.addEventListener("input", () => {
+    const text = messageInput.value;
 
-    let text = messageInput.value.trim();
-    if (!text) return;
-
-    /* 🎭 /me */
-    if (text.startsWith("/me ")) {
-        const action = text.slice(4).trim();
-        if (!action) return;
-
-        socket.emit("chatMessage", {
-            type: "me",
-            user: username,
-            message: action
-        });
-
-        messageInput.value = "";
+    if (!text.startsWith("/gif ")) {
+        gifBox.classList.add("hidden");
         return;
     }
 
-    /* 🎞️ /gif — DÜZELTİLDİ */
-    if (text.startsWith("/gif ")) {
-        const query = text.slice(5).trim();
-        if (!query) return;
+    const query = text.slice(5).trim();
+    if (query.length < 2) return;
 
-        fetch(`https://api.giphy.com/v1/gifs/translate?api_key=dc6zaTOxFJmzC&s=${encodeURIComponent(query)}`)
-            .then(res => res.json())
-            .then(data => {
-                const gifUrl = data?.data?.images?.original?.url;
-                if (!gifUrl) return;
+    fetch(`https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${encodeURIComponent(query)}&limit=6`)
+        .then(r => r.json())
+        .then(data => {
+            gifBox.innerHTML = "";
+            gifBox.classList.remove("hidden");
 
-                socket.emit("chatMessage", {
-                    type: "gif",
-                    user: username,
-                    message: gifUrl
-                });
+            data.data.forEach(gif => {
+                const div = document.createElement("div");
+                div.innerHTML = `
+                    <img src="${gif.images.fixed_height_small.url}">
+                    <span>${gif.title || "GIF"}</span>
+                `;
+                div.onclick = () => sendGif(gif.images.original.url);
+                gifBox.appendChild(div);
             });
+        });
+});
 
-        messageInput.value = "";
-        return;
-    }
-
-    /* 💬 NORMAL */
+function sendGif(url) {
     socket.emit("chatMessage", {
-        type: "text",
+        type: "gif",
         user: username,
-        message: text
+        message: url
     });
 
+    gifBox.classList.add("hidden");
     messageInput.value = "";
 }
 
-/* 📩 RECEIVE */
-socket.on("chatMessage", data => {
+/* TEXT + /me */
+function sendMessage() {
     if (!username) return;
+
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    if (text.startsWith("/me ")) {
+        socket.emit("chatMessage", {
+            type: "me",
+            user: username,
+            message: text.slice(4)
+        });
+    } else {
+        socket.emit("chatMessage", {
+            type: "text",
+            user: username,
+            message: text
+        });
+    }
+
+    gifBox.classList.add("hidden");
+    messageInput.value = "";
+}
+
+/* RECEIVE */
+socket.on("chatMessage", data => {
     renderMessage(data);
 });
 
@@ -107,16 +120,13 @@ function renderMessage(data) {
         `;
     }
     else {
-        msg.innerHTML = `
-            <span class="user">${data.user}:</span> ${data.message}
-        `;
+        msg.innerHTML = `<span class="user">${data.user}:</span> ${data.message}`;
     }
 
     chat.appendChild(msg);
     msg.scrollIntoView({ behavior: "smooth" });
 }
 
-/* ℹ️ SYSTEM */
 function addSystemMessage(text) {
     const msg = document.createElement("div");
     msg.className = "message system";

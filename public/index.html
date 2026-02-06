@@ -2,22 +2,25 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Chatter-LiveChat</title>
+    <title>Chatter Live</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="top-bar">
-    <input id="usernameInput" placeholder="Kullanıcı adı">
+<div class="login">
+    <input id="usernameInput" placeholder="Kullanıcı adın">
     <button id="joinBtn">✔</button>
 </div>
 
 <div id="chat" class="chat hidden"></div>
 
 <div class="input-bar hidden" id="inputBar">
-    <input id="messageInput" placeholder="Mesaj yaz...">
+    <input id="messageInput" placeholder="Mesaj yaz... (/gif kedi, /me güler)">
     <button id="sendBtn">Gönder</button>
 </div>
+
+<!-- GIF AUTOCOMPLETE -->
+<div id="gifSuggestions" class="gif-suggestions hidden"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="script.js"></script>
