@@ -1,68 +1,60 @@
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
-
 const io = require("socket.io")(http);
-const Database = require("better-sqlite3");
-const db = new Database("chat.db");
 
-db.prepare(`
-    CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user TEXT,
-        text TEXT,
-        time TEXT
-    )
-`).run();
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("chat.db");
+
+// DB tablosunu oluştur
+db.run(`
+  CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user TEXT,
+    text TEXT,
+    time TEXT
+  )
+`);
 
 app.use(express.static("public"));
 
 io.on("connection", (socket) => {
 
-    socket.on("join", (username) => {
-        socket.username = username;
+  socket.on("join", (username) => {
+    socket.username = username;
 
-        socket.emit(
-            "chatHistory",
-            db.prepare("SELECT * FROM messages ORDER BY id ASC").all()
-        );
-
-        io.emit("message", {
-            user: "Chatter-LiveChat",
-            text: `${username} katıldı`,
-            time: new Date().toLocaleTimeString("tr-TR", {
-                hour: "2-digit",
-                minute: "2-digit"
-            })
-        });
+    // Mesaj geçmişini gönder
+    db.all("SELECT * FROM messages ORDER BY id ASC", [], (err, rows) => {
+      if (!err) socket.emit("chatHistory", rows);
     });
 
-    socket.on("chatMessage", (msg) => {
-        if (!socket.username) return;
+    // Kullanıcı katıldı mesajı
+    const joinMsg = {
+      user: "Chatter-LiveChat",
+      text: `${username} katıldı`,
+      time: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+    };
+    io.emit("message", joinMsg);
+  });
 
-        const time = new Date().toLocaleTimeString("tr-TR", {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
+  socket.on("chatMessage", (msg) => {
+    if (!socket.username) return;
 
-        db.prepare(
-            "INSERT INTO messages (user, text, time) VALUES (?, ?, ?)"
-        ).run(socket.username, msg, time);
+    const time = new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+    const data = { user: socket.username, text: msg, time };
 
-        io.emit("message", {
-            user: socket.username,
-            text: msg,
-            time
-        });
+    // Mesajı DB'ye ekle
+    db.run("INSERT INTO messages (user, text, time) VALUES (?, ?, ?)", [data.user, data.text, data.time], (err) => {
+      if (err) console.error(err);
     });
+
+    // Mesajı yay
+    io.emit("message", data);
+  });
 });
 
-http.listen(3000, () => {
-    console.log("✅ Chatter-LiveChat (stable) → http://localhost:3000");
-});
-
+// Render free plan uyumlu port
 const PORT = process.env.PORT || 3000;
-
 http.listen(PORT, () => {
-    console.log("✅ Chatter-LiveChat canlıda çalışıyor");
+  console.log(`✅ Chatter-LiveChat çalışıyor → http://localhost:${PORT}`);
 });
