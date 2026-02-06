@@ -1,59 +1,52 @@
 const socket = io();
 
-const usernameInput = document.getElementById("usernameInput");
-const joinBtn = document.getElementById("joinBtn");
 const chat = document.getElementById("chat");
-const inputBar = document.getElementById("inputBar");
-const messageInput = document.getElementById("messageInput");
+const input = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 
-let joined = false;
-
-joinBtn.onclick = () => {
-    const username = usernameInput.value.trim();
-    if (!username) return;
-
-    socket.emit("join", username);
-    joined = true;
-
-    chat.classList.remove("hidden");
-    inputBar.classList.remove("hidden");
-
-    usernameInput.disabled = true;
-    joinBtn.disabled = true;
-};
+let username = "Guest" + Math.floor(Math.random() * 9999);
 
 sendBtn.onclick = sendMessage;
-messageInput.addEventListener("keydown", e => {
+input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendMessage();
 });
 
 function sendMessage() {
-    if (!joined) return;
-    const msg = messageInput.value.trim();
-    if (!msg) return;
+    const text = input.value.trim();
+    if (!text) return;
 
-    socket.emit("chatMessage", msg);
-    messageInput.value = "";
+    socket.emit("chatMessage", {
+        user: username,
+        message: text
+    });
+
+    input.value = "";
 }
 
-socket.on("chatHistory", messages => {
-    chat.innerHTML = "";
-    messages.forEach(addMessage);
+socket.on("chatMessage", (data) => {
+    renderMessage(data.user, data.message);
 });
 
-socket.on("message", addMessage);
+function renderMessage(user, text) {
+    const msg = document.createElement("div");
+    msg.className = "message";
 
-function addMessage(data) {
-    const div = document.createElement("div");
-    div.className = "message";
+    const isGif =
+        text.endsWith(".gif") ||
+        text.includes("tenor.com") ||
+        text.includes("giphy.com");
 
-    if (data.user === "Chatter-LiveChat") {
-        div.innerHTML = `<span class="system">[${data.time}] ${data.text}</span>`;
+    if (isGif) {
+        msg.innerHTML = `
+            <span class="user">${user}:</span><br>
+            <img src="${text}" class="gif">
+        `;
     } else {
-        div.innerHTML = `<span class="user">${data.user}</span> [${data.time}]: ${data.text}`;
+        msg.innerHTML = `
+            <span class="user">${user}:</span> ${text}
+        `;
     }
 
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+    chat.appendChild(msg);
+    msg.scrollIntoView();
 }
