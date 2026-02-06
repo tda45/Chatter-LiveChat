@@ -10,7 +10,7 @@ const inputBar = document.getElementById("inputBar");
 
 let username = null;
 
-/* 🔒 GİRİŞ */
+/* 🔒 JOIN */
 joinBtn.onclick = () => {
     const name = usernameInput.value.trim();
     if (!name) {
@@ -27,7 +27,7 @@ joinBtn.onclick = () => {
     addSystemMessage(`👋 ${username} sohbete katıldı`);
 };
 
-/* ✉️ MESAJ GÖNDER */
+/* ✉️ SEND */
 sendBtn.onclick = sendMessage;
 messageInput.addEventListener("keypress", e => {
     if (e.key === "Enter") sendMessage();
@@ -39,9 +39,9 @@ function sendMessage() {
     let text = messageInput.value.trim();
     if (!text) return;
 
-    /* 🎭 /me KOMUTU */
+    /* 🎭 /me */
     if (text.startsWith("/me ")) {
-        const action = text.replace("/me ", "").trim();
+        const action = text.slice(4).trim();
         if (!action) return;
 
         socket.emit("chatMessage", {
@@ -54,25 +54,29 @@ function sendMessage() {
         return;
     }
 
-    /* 🎞️ /gif KOMUTU */
+    /* 🎞️ /gif — DÜZELTİLDİ */
     if (text.startsWith("/gif ")) {
-        const query = text.replace("/gif ", "").trim();
+        const query = text.slice(5).trim();
         if (!query) return;
 
-        const gifUrl =
-            `https://media.tenor.com/search?q=${encodeURIComponent(query)}&s=share`;
+        fetch(`https://api.giphy.com/v1/gifs/translate?api_key=dc6zaTOxFJmzC&s=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                const gifUrl = data?.data?.images?.original?.url;
+                if (!gifUrl) return;
 
-        socket.emit("chatMessage", {
-            type: "gif",
-            user: username,
-            message: gifUrl
-        });
+                socket.emit("chatMessage", {
+                    type: "gif",
+                    user: username,
+                    message: gifUrl
+                });
+            });
 
         messageInput.value = "";
         return;
     }
 
-    /* 💬 NORMAL MESAJ */
+    /* 💬 NORMAL */
     socket.emit("chatMessage", {
         type: "text",
         user: username,
@@ -82,7 +86,7 @@ function sendMessage() {
     messageInput.value = "";
 }
 
-/* 📩 MESAJ AL */
+/* 📩 RECEIVE */
 socket.on("chatMessage", data => {
     if (!username) return;
     renderMessage(data);
@@ -92,30 +96,22 @@ function renderMessage(data) {
     const msg = document.createElement("div");
     msg.className = "message";
 
-    /* 🎭 /me GÖRÜNÜMÜ */
     if (data.type === "me") {
         msg.classList.add("me");
         msg.textContent = `* ${data.user} ${data.message}`;
-        chat.appendChild(msg);
-        msg.scrollIntoView({ behavior: "smooth" });
-        return;
     }
-
-    /* 🎞️ GIF */
-    if (data.type === "gif") {
+    else if (data.type === "gif") {
         msg.innerHTML = `
             <span class="user">${data.user}</span><br>
             <img src="${data.message}" class="gif">
         `;
-        chat.appendChild(msg);
-        msg.scrollIntoView({ behavior: "smooth" });
-        return;
+    }
+    else {
+        msg.innerHTML = `
+            <span class="user">${data.user}:</span> ${data.message}
+        `;
     }
 
-    /* 💬 NORMAL */
-    msg.innerHTML = `
-        <span class="user">${data.user}:</span> ${data.message}
-    `;
     chat.appendChild(msg);
     msg.scrollIntoView({ behavior: "smooth" });
 }
