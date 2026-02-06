@@ -1,79 +1,91 @@
 const socket = io();
 
-const chat = document.getElementById("chat");
-const messageInput = document.getElementById("messageInput");
+const usernameInput = document.getElementById("username");
+const joinBtn = document.getElementById("joinBtn");
+
+const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("sendBtn");
 
-const usernameInput = document.getElementById("usernameInput");
-const joinBtn = document.getElementById("joinBtn");
-const inputBar = document.getElementById("inputBar");
+const chat = document.getElementById("chat");
+const typingDiv = document.getElementById("typing");
 
 let username = null;
+let typingTimeout = null;
 
-/* ✅ KULLANICI GİRİŞ */
+// GİRİŞ
 joinBtn.onclick = () => {
     const name = usernameInput.value.trim();
-    if (!name) return alert("Kullanıcı adı gir");
+    if (!name) return alert("Kullanıcı adı gir!");
 
     username = name;
+    socket.emit("join", username);
 
-    chat.classList.remove("hidden");
-    inputBar.classList.remove("hidden");
-
-    usernameInput.disabled = true;
-    joinBtn.disabled = true;
-
-    addSystemMessage(`👋 ${username} sohbete katıldı`);
+    document.querySelector(".top-bar").classList.add("hidden");
+    document.querySelector(".input-bar").classList.remove("hidden");
 };
 
-/* GÖNDER */
+// MESAJ GÖNDER
 sendBtn.onclick = sendMessage;
-messageInput.addEventListener("keydown", e => {
+messageInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendMessage();
 });
 
-function sendMessage() {
-    if (!username) return;
+// YAZIYOR…
+messageInput.addEventListener("input", () => {
+    socket.emit("typing");
 
-    const text = messageInput.value.trim();
-    if (!text) return;
-
-    if (text.startsWith("/me ")) {
-        socket.emit("chatMessage", {
-            type: "me",
-            user: username,
-            message: text.slice(4)
-        });
-    } else {
-        socket.emit("chatMessage", {
-            type: "text",
-            user: username,
-            message: text
-        });
-    }
-
-    messageInput.value = "";
-}
-
-/* GELEN MESAJ */
-socket.on("chatMessage", data => {
-    const msg = document.createElement("div");
-    msg.className = "message";
-
-    if (data.type === "me") {
-        msg.classList.add("me");
-        msg.textContent = `* ${data.user} ${data.message}`;
-    } else {
-        msg.innerHTML = `<span class="user">${data.user}:</span> ${data.message}`;
-    }
-
-    chat.appendChild(msg);
-    msg.scrollIntoView({ behavior: "smooth" });
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        socket.emit("stopTyping");
+    }, 1000);
 });
 
-function addSystemMessage(text) {
-    const msg = document.createElement("div");
-    msg.className = "message system";
-    msg.textContent = text;
-    chat.appendChild(msg);
+function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text || !username) return;
+
+    socket.emit("chat", text);
+    messageInput.value = "";
+    socket.emit("stopTyping");
+}
+
+// CHAT MESAJI
+socket.on("chat", (data) => {
+    addMessage(
+        `[${data.time}] `,
+        `${data.user}: `,
+        data.text
+    );
+});
+
+// SİSTEM MESAJI
+socket.on("system", (data) => {
+    const div = document.createElement("div");
+    div.className = "message system";
+    div.textContent = `[${data.time}] ${data.text}`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+});
+
+// YAZIYOR…
+socket.on("typing", (user) => {
+    typingDiv.textContent = `🔴 ${user} yazıyor...`;
+});
+
+socket.on("stopTyping", () => {
+    typingDiv.textContent = "";
+});
+
+function addMessage(time, user, text) {
+    const div = document.createElement("div");
+    div.className = "message";
+
+    div.innerHTML = `
+        <span class="time">${time}</span>
+        <span class="user">${user}</span>
+        ${text}
+    `;
+
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
 }
