@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io(window.location.origin);
 
 const usernameInput = document.getElementById("username");
 const joinBtn = document.getElementById("joinBtn");
