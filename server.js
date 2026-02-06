@@ -60,3 +60,9 @@ io.on("connection", (socket) => {
 http.listen(3000, () => {
     console.log("✅ Chatter-LiveChat (stable) → http://localhost:3000");
 });
+
+const PORT = process.env.PORT || 3000;
+
+http.listen(PORT, () => {
+    console.log("✅ Chatter-LiveChat canlıda çalışıyor");
+});
