@@ -1,18 +1,41 @@
 const socket = io();
 
 const chat = document.getElementById("chat");
-const input = document.getElementById("messageInput");
+const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 
-let username = "Guest" + Math.floor(Math.random() * 9999);
+const usernameInput = document.getElementById("usernameInput");
+const joinBtn = document.getElementById("joinBtn");
+const inputBar = document.getElementById("inputBar");
 
+let username = null;
+
+/* 🔒 GİRİŞ */
+joinBtn.onclick = () => {
+    const name = usernameInput.value.trim();
+    if (!name) {
+        alert("Kullanıcı adı gir!");
+        return;
+    }
+
+    username = name;
+
+    chat.classList.remove("hidden");
+    inputBar.classList.remove("hidden");
+    usernameInput.disabled = true;
+    joinBtn.disabled = true;
+};
+
+/* ❌ KULLANICI ADI YOKSA YAZAMAZ */
 sendBtn.onclick = sendMessage;
-input.addEventListener("keypress", (e) => {
+messageInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendMessage();
 });
 
 function sendMessage() {
-    const text = input.value.trim();
+    if (!username) return;
+
+    const text = messageInput.value.trim();
     if (!text) return;
 
     socket.emit("chatMessage", {
@@ -20,10 +43,12 @@ function sendMessage() {
         message: text
     });
 
-    input.value = "";
+    messageInput.value = "";
 }
 
+/* 📩 MESAJ AL */
 socket.on("chatMessage", (data) => {
+    if (!username) return;
     renderMessage(data.user, data.message);
 });
 
