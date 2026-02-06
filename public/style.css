@@ -114,3 +114,10 @@ body {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+
+/* 🎭 /me KOMUTU */
+.message.me {
+    font-style: italic;
+    color: #ff6666;
+    text-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+}
