@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatter-LiveChat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+    <input id="usernameInput" placeholder="Kullanıcı adı">
+    <button id="joinBtn">✔</button>
+</div>
+
+<div id="chat" class="chat hidden"></div>
+
+<div class="input-bar hidden" id="inputBar">
+    <input id="messageInput" placeholder="Mesaj yaz...">
+    <button id="sendBtn">Gönder</button>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
