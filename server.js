@@ -11,32 +11,42 @@ app.use(express.static("public"));
 const users = {};
 const lastMessage = {};
 
+function time() {
+    return new Date().toLocaleTimeString("tr-TR", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
 io.on("connection", (socket) => {
+    console.log("Bağlandı:", socket.id);
 
     socket.on("join", (username) => {
         users[socket.id] = username;
 
-        io.emit("system", {
-            text: `🔴 ${username} sohbete katıldı`,
+        socket.emit("system", {
+            text: `Hoş geldin ${username}`,
+            time: time()
+        });
+
+        socket.broadcast.emit("system", {
+            text: `${username} sohbete katıldı`,
             time: time()
         });
     });
 
-    socket.on("typing", () => {
-        const user = users[socket.id];
-        if (user) socket.broadcast.emit("typing", user);
-    });
-
-    socket.on("stopTyping", () => {
-        socket.broadcast.emit("stopTyping");
-    });
-
     socket.on("chat", (msg) => {
         const user = users[socket.id];
-        if (!user) return;
+        if (!user) {
+            socket.emit("system", {
+                text: "⚠️ Önce kullanıcı adıyla giriş yapmalısın",
+                time: time()
+            });
+            return;
+        }
 
         const now = Date.now();
-        if (lastMessage[socket.id] && now - lastMessage[socket.id] < 2000) {
+        if (lastMessage[socket.id] && now - lastMessage[socket.id] < 1500) {
             socket.emit("system", {
                 text: "⚠️ Çok hızlı yazıyorsun",
                 time: time()
@@ -57,7 +67,7 @@ io.on("connection", (socket) => {
         const user = users[socket.id];
         if (user) {
             io.emit("system", {
-                text: `🔴 ${user} sohbetten ayrıldı`,
+                text: `${user} ayrıldı`,
                 time: time()
             });
             delete users[socket.id];
@@ -65,13 +75,6 @@ io.on("connection", (socket) => {
     });
 });
 
-function time() {
-    return new Date().toLocaleTimeString("tr-TR", {
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
-
-server.listen(10000, () => {
-    console.log("✅ Chatter-LiveChat çalışıyor → http://localhost:10000");
+server.listen(3000, () => {
+    console.log("Server çalışıyor → http://localhost:3000");
 });
