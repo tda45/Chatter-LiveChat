@@ -18,7 +18,7 @@ Lisansımız Vardır.
 
 Güncelleme Alacaktır.
 
-2 SAniye İçinde 2 Mesaj Yollayamazsınız Yani Spam Atamazsınız.
+2 Saniye İçinde 2 Mesaj Yollayamazsınız Yani Spam Atamazsınız.
 
 SUNUCU TARAFI:NODE.JS
 BACKEND:RENDER
@@ -28,4 +28,3 @@ BACKEND:RENDER
 Eğer Başka Projelerimide Görmek İstiyorsanız Benim Siteyede Gidebilirsiniz -->https://sites.google.com/view/dev-tda-45/ana-sayfa
 
  Telif Hakkı (©) Tda_45
-
