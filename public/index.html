@@ -3,135 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Chatter LiveChat</title>
-
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#ff1a1a">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            margin: 0;
-            background: #0b0b0b;
-            color: white;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ÜST BAR */
-        .top-bar {
-            display: flex;
-            padding: 10px;
-            background: #120000;
-            border-bottom: 1px solid #ff1a1a;
-            gap: 6px;
-        }
-
-        .top-bar input {
-            flex: 1;
-            padding: 10px;
-            background: #1a0000;
-            border: 1px solid #ff1a1a;
-            color: white;
-            outline: none;
-        }
-
-        .top-bar button {
-            background: #ff1a1a;
-            border: none;
-            padding: 0 16px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        /* CHAT */
-        .chat {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .message {
-            margin-bottom: 10px;
-        }
-
-        .user {
-            color: #ff4d4d;
-            font-weight: bold;
-        }
-
-        .system {
-            color: #ff1a1a;
-            font-style: italic;
-        }
-
-        /* ALT BAR */
-        .input-bar {
-            display: flex;
-            padding: 10px;
-            background: #120000;
-            border-top: 1px solid #ff1a1a;
-            gap: 6px;
-        }
-
-        .input-bar input {
-            flex: 1;
-            padding: 10px;
-            background: #1a0000;
-            border: 1px solid #ff1a1a;
-            color: white;
-            outline: none;
-        }
-
-        .input-bar button {
-            background: #ff1a1a;
-            border: none;
-            padding: 0 16px;
-            cursor: pointer;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="icon" href="icon.png">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ÜST BAR / KULLANICI ADI -->
-    <div class="top-bar">
-        <input id="usernameInput" type="text" placeholder="Kullanıcı adını gir">
-        <button id="joinBtn">✔</button>
+<!-- GİRİŞ EKRANI -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <h1>Chatter LiveChat</h1>
+        <input id="username" placeholder="Kullanıcı adı">
+        <button id="joinBtn">Giriş Yap</button>
     </div>
+</div>
 
-    <!-- CHAT -->
-    <div id="chat" class="chat"></div>
+<!-- SOHBET EKRANI -->
+<div id="chatScreen" class="chat-screen hidden">
 
-    <!-- MESAJ GÖNDER -->
-    <div class="input-bar">
-        <input id="messageInput" type="text" placeholder="Mesaj yaz..." disabled>
-        <button id="sendBtn" disabled>Gönder</button>
-    </div>
+    <header class="header">
+        <span>🔥 Chatter LiveChat</span>
+        <span id="currentUser"></span>
+    </header>
 
-    <!-- CLIENT SCRIPT -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/script.js"></script>
+    <main id="chat" class="chat-area"></main>
 
-    <!-- SERVICE WORKER -->
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js");
-        }
-    </script>
+    <footer class="input-bar">
+        <input id="message" placeholder="Mesaj yaz...">
+        <button id="sendBtn">Gönder</button>
+    </footer>
 
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
