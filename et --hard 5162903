@@ -1,0 +1,33 @@
+[33m9eb321c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: commit (merge): Merge branch 'master' of https://github.com/tda45/Chatter-LiveChat
+[33m5162903[m HEAD@{1}: commit: README YE GÜNCELLEME
+[33m05f748e[m HEAD@{2}: commit: README.md EKLENDİ
+[33m743ca14[m HEAD@{3}: commit: GÜNCELLEME
+[33m4e9281b[m HEAD@{4}: commit: GÜNCELLEME
+[33m45a9dcc[m HEAD@{5}: commit: GÜNCELLEME
+[33m810aee0[m HEAD@{6}: commit: GÜNCELLENDİ
+[33m617b84b[m HEAD@{7}: commit: GÜNCELLEME
+[33ma87afcc[m HEAD@{8}: commit: GÜNCELLEME
+[33mfcd2a7d[m HEAD@{9}: commit: GÜNCELLEME
+[33m2b85e13[m HEAD@{10}: commit: FAVİCON EKLENDİ
+[33m9b27a69[m HEAD@{11}: commit: GÜNCELLEME
+[33mb681593[m HEAD@{12}: commit: GÜNCELLEME
+[33mf1ab536[m HEAD@{13}: commit: GÜNCELLEME
+[33m528cda4[m HEAD@{14}: commit: GÜNCELLEME
+[33m8c852fa[m HEAD@{15}: commit: GÜNCELLEME
+[33m2cedf85[m HEAD@{16}: commit: Güncelleme
+[33m338ed9e[m HEAD@{17}: commit: Güncelle
+[33m29d9819[m HEAD@{18}: reset: moving to 29d9819
+[33mbd192d7[m HEAD@{19}: reset: moving to HEAD~1
+[33m36a1c10[m HEAD@{20}: commit: Güncelleme
+[33mbd192d7[m HEAD@{21}: commit: Backend and client script update
+[33mefdb9f9[m HEAD@{22}: commit: README.md'ye MIT Lisans Güncellemesi Geldi
+[33m5db9cf5[m HEAD@{23}: commit: MIT lisansı eklendi
+[33m742eda8[m HEAD@{24}: commit: README.md güncellendi!
+[33m82d0528[m HEAD@{25}: commit: README.md eklendi
+[33m891f4be[m HEAD@{26}: pull --tags origin master: Merge made by the 'ort' strategy.
+[33m29d9819[m HEAD@{27}: commit: Kayıt Sistemi Yok
+[33m013c42f[m HEAD@{28}: rebase (finish): returning to refs/heads/master
+[33m013c42f[m HEAD@{29}: rebase (continue): server.js sqlite3 olarak güncellendi
+[33m8c07dbe[m HEAD@{30}: pull origin master --rebase (start): checkout 8c07dbeb5bb9086a435111e6a0efdae782d75eef
+[33mc44708f[m HEAD@{31}: commit: server.js sqlite3 olarak güncellendi
+[33md8699ad[m HEAD@{32}: commit (initial): Chatter-LiveChat first release
