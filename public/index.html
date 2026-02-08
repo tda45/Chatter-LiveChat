@@ -3,17 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Chatter LiveChat</title>
-
-    <!-- ICON -->
     <link rel="icon" href="icon.png">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- MOBİL / PWA -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#ff1a1a">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -21,7 +12,7 @@
 <div id="loginScreen" class="login-screen">
     <div class="login-box">
         <h1>Chatter LiveChat</h1>
-        <input id="username" placeholder="Kullanıcı adı" autocomplete="off">
+        <input id="username" placeholder="Kullanıcı adı">
         <button id="joinBtn">Giriş Yap</button>
     </div>
 </div>
@@ -37,24 +28,13 @@
     <main id="chat" class="chat-area"></main>
 
     <footer class="input-bar">
-        <input id="message" placeholder="Mesaj yaz..." autocomplete="off" disabled>
-        <button id="sendBtn" disabled>Gönder</button>
+        <input id="message" placeholder="Mesaj yaz...">
+        <button id="sendBtn">Gönder</button>
     </footer>
 
 </div>
 
-<!-- SOCKET.IO -->
 <script src="/socket.io/socket.io.js"></script>
-
-<!-- CLIENT -->
 <script src="script.js"></script>
-
-<!-- SERVICE WORKER -->
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-}
-</script>
-
 </body>
 </html>
