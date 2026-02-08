@@ -76,5 +76,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(3000, () => {
-    console.log("Server çalışıyor → http://localhost:3000");
+    console.log("Server Yazışmayla Başlıyor → http://localhost:3000");
 });
