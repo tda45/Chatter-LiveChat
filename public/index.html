@@ -38,5 +38,13 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="script.js"></script>
+<script>
+document.addEventListener("keydown", function(e){
+    if(e.ctrlKey && e.shiftKey && e.key === "X"){
+        window.location.href = "secret.html";
+    }
+});
+</script>
+
 </body>
 </html>
