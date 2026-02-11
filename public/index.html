@@ -45,6 +45,22 @@ document.addEventListener("keydown", function(e){
     }
 });
 </script>
+<script>
+document.addEventListener("keydown", function(e){
+
+    // Secret sayfa
+    if(e.ctrlKey && e.shiftKey && e.key === "X"){
+        window.location.href = "secret.html";
+    }
+
+    // Minecraft sayfa
+    if(e.ctrlKey && e.shiftKey && e.key === "M"){
+        window.location.href = "minecraft.html";
+    }
+
+});
+</script>
+
 
 </body>
 </html>
