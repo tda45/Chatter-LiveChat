@@ -23,6 +23,8 @@ Güncelleme Alacaktır.
 SUNUCU TARAFI:NODE.JS
 BACKEND:RENDER
 
+Bazı Tuş Lara Art Arda BAsarsanız Gizli Veya Bir Oyun Sayfası Açılır.Gizli Sayfa İçin:Ctrl+Shift+X ... Oyun İçin:Ctrl+Shift+M Dir.
+
 İYİ KONUŞMALAR.
 
 Eğer Başka Projelerimide Görmek İstiyorsanız Benim Siteyede Gidebilirsiniz -->https://sites.google.com/view/dev-tda-45/ana-sayfa
