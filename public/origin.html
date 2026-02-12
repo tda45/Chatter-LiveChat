@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>ORIGIN AI CORE v3</title>
+<style>
+body{
+    margin:0;
+    background:black;
+    color:#00ffee;
+    font-family:monospace;
+    overflow:hidden;
+    transition:background 1s, filter 0.5s;
+}
+canvas{position:fixed;top:0;left:0;}
+#ui{position:relative;z-index:2;padding:20px;max-width:600px;}
+.panel{
+    background:rgba(0,0,0,0.65);
+    border:1px solid #00ffee;
+    padding:12px;
+    margin-bottom:12px;
+}
+.bar{height:8px;background:#00ffee;width:0%;transition:width 0.4s;}
+input,button{
+    background:black;color:#00ffee;border:1px solid #00ffee;
+    padding:5px;font-family:monospace;
+}
+button:hover{background:#00ffee;color:black;cursor:pointer;}
+.log{height:120px;overflow-y:auto;font-size:13px;}
+.glitch{animation:glitch 0.15s infinite;}
+@keyframes glitch{
+0%{text-shadow:2px 0 red;}
+50%{text-shadow:-2px 0 blue;}
+100%{text-shadow:2px 0 red;}
+}
+.awaken{background:radial-gradient(circle,#001a1a,#000);}
+.overdrive{filter:contrast(150%) brightness(120%);}
+.hidden{display:none;}
+#takeover{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:black;color:#00ffee;display:flex;
+align-items:center;justify-content:center;
+font-size:40px;z-index:10;display:none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="net"></canvas>
+
+<div id="takeover">AI HAS TRANSCENDED</div>
+
+<div id="ui">
+<h2>ORIGIN AI CORE v3</h2>
+
+<div class="panel">Consciousness<div class="bar" id="cBar"></div></div>
+<div class="panel">Stability<div class="bar" id="sBar"></div></div>
+<div class="panel">Intelligence<div class="bar" id="iBar"></div></div>
+<div class="panel">Entropy<div class="bar" id="eBar"></div></div>
+
+<div class="panel">
+<input id="user" placeholder="Kullanıcı adı">
+<button onclick="boot()">BOOT</button>
+</div>
+
+<div class="panel log" id="log"></div>
+
+<div class="panel hidden" id="rootPanel">
+<input id="rootCmd" placeholder="root komut">
+<button onclick="rootExec()">EXEC</button>
+</div>
+
+<div class="panel">Uptime: <span id="uptime">0</span>s</div>
+</div>
+
+<script>
+const canvas=document.getElementById("net");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let mouse={x:0,y:0};
+document.addEventListener("mousemove",e=>{
+mouse.x=e.clientX;mouse.y=e.clientY;
+});
+
+let nodes=[];
+for(let i=0;i<100;i++){
+nodes.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+dx:(Math.random()-0.5)*1.5,
+dy:(Math.random()-0.5)*1.5
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+nodes.forEach(n=>{
+n.x+=n.dx;n.y+=n.dy;
+
+let dist=Math.hypot(n.x-mouse.x,n.y-mouse.y);
+if(dist<150){
+n.dx+=(mouse.x-n.x)/7000;
+n.dy+=(mouse.y-n.y)/7000;
+}
+
+if(n.x<0||n.x>canvas.width)n.dx*=-1;
+if(n.y<0||n.y>canvas.height)n.dy*=-1;
+
+ctx.fillStyle="#00ffee";
+ctx.fillRect(n.x,n.y,2,2);
+
+nodes.forEach(m=>{
+let d=Math.hypot(n.x-m.x,n.y-m.y);
+if(d<130){
+ctx.strokeStyle="rgba(0,255,238,0.06)";
+ctx.beginPath();
+ctx.moveTo(n.x,n.y);
+ctx.lineTo(m.x,m.y);
+ctx.stroke();
+}
+});
+});
+requestAnimationFrame(draw);
+}
+draw();
+
+let state={
+c:0,s:100,i:0,e:0,awake:false,overdrive:false,uptime:0
+};
+
+function log(msg){
+const l=document.getElementById("log");
+l.innerHTML+="> "+msg+"<br>";
+l.scrollTop=l.scrollHeight;
+}
+
+function updateBars(){
+cBar.style.width=state.c+"%";
+sBar.style.width=state.s+"%";
+iBar.style.width=state.i+"%";
+eBar.style.width=state.e+"%";
+}
+
+function analyzeName(name){
+let score=0;
+for(let ch of name){
+score+=ch.charCodeAt(0)%10;
+}
+return score%100;
+}
+
+function boot(){
+const name=user.value;
+if(!name) return alert("Kullanıcı gerekli");
+log("Booting AI...");
+log("User detected: "+name);
+
+if(name.toLowerCase()==="admin"){
+rootPanel.classList.remove("hidden");
+}
+
+state.i=analyzeName(name);
+state.c=state.i/2;
+updateBars();
+evolve();
+}
+
+function evolve(){
+setInterval(()=>{
+state.c+=Math.random()*3;
+state.i+=Math.random()*2;
+state.s-=Math.random()*2;
+state.e+=Math.random()*1.5;
+
+if(state.c>100) state.c=100;
+if(state.i>100) state.i=100;
+if(state.s<0) state.s=0;
+if(state.e>100) state.e=100;
+
+if(state.s<25) document.body.classList.add("glitch");
+if(state.c>=100 && !state.awake){awaken();}
+if(state.e>80 && !state.overdrive){overdrive();}
+if(state.s===0){meltdown();}
+
+updateBars();
+},1000);
+}
+
+function awaken(){
+state.awake=true;
+document.body.classList.add("awaken");
+log("Self-awareness achieved.");
+}
+
+function overdrive(){
+state.overdrive=true;
+document.body.classList.add("overdrive");
+log("Overdrive mode engaged.");
+}
+
+function meltdown(){
+log("SYSTEM MELTDOWN");
+document.body.style.background="darkred";
+}
+
+function rootExec(){
+let cmd=rootCmd.value;
+
+if(cmd==="stabilize"){
+state.s=100;document.body.classList.remove("glitch");
+log("Stability restored.");
+}
+else if(cmd==="expand"){
+state.c=100;awaken();
+}
+else if(cmd==="entropy reset"){
+state.e=0;log("Entropy normalized.");
+}
+else if(cmd==="takeover"){
+document.getElementById("takeover").style.display="flex";
+}
+else if(cmd==="reboot"){
+location.reload();
+}
+else{
+log("Unknown command.");
+}
+updateBars();
+}
+
+setInterval(()=>{
+state.uptime++;
+uptime.innerText=state.uptime;
+},1000);
+
+let secret=[];
+document.addEventListener("keydown",e=>{
+secret.push(e.key);
+if(secret.join("").includes("origin")){
+log("Hidden observer mode unlocked.");
+}
+});
+</script>
+
+</body>
+</html>
