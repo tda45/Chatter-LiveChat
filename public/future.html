@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>FUTURE SYSTEM 2032</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    color:#00ffcc;
+    font-family:monospace;
+    overflow:hidden;
+}
+
+#stars{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:radial-gradient(white 1px, transparent 1px);
+    background-size:3px 3px;
+    animation:moveStars 60s linear infinite;
+    opacity:0.15;
+}
+@keyframes moveStars{
+    from{background-position:0 0;}
+    to{background-position:1000px 1000px;}
+}
+
+#terminal{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:20px;
+    overflow-y:auto;
+}
+
+input{
+    background:black;
+    color:#00ffcc;
+    border:none;
+    outline:none;
+    width:80%;
+    font-family:monospace;
+}
+
+.scanlines{
+    pointer-events:none;
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.3) 0px,
+        rgba(0,0,0,0.3) 2px,
+        transparent 2px,
+        transparent 4px
+    );
+}
+
+.glitch{
+    animation:glitch 0.3s infinite;
+}
+@keyframes glitch{
+    0%{text-shadow:2px 0 red;}
+    50%{text-shadow:-2px 0 blue;}
+    100%{text-shadow:2px 0 red;}
+}
+
+.progress{
+    height:10px;
+    background:#00ffcc;
+    width:0%;
+    transition:width 0.2s;
+}
+
+#cpuBox{
+    position:fixed;
+    top:10px;
+    right:20px;
+    font-size:12px;
+}
+
+.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div class="scanlines"></div>
+
+<div id="cpuBox">
+CPU: <span id="cpu">0</span>%<br>
+RAM: <span id="ram">0</span>%
+</div>
+
+<div id="terminal"></div>
+
+<script>
+
+const terminal = document.getElementById("terminal");
+let history = [];
+let historyIndex = 0;
+
+function print(text, cls=""){
+    const line = document.createElement("div");
+    line.innerHTML = text;
+    if(cls) line.classList.add(cls);
+    terminal.appendChild(line);
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+function newInput(){
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = "2032@future:~$ ";
+    const input = document.createElement("input");
+    wrapper.appendChild(input);
+    terminal.appendChild(wrapper);
+    input.focus();
+
+    input.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){
+            const cmd = input.value.trim();
+            history.push(cmd);
+            historyIndex = history.length;
+            input.disabled = true;
+            processCommand(cmd);
+        }
+        if(e.key === "ArrowUp"){
+            if(historyIndex > 0){
+                historyIndex--;
+                input.value = history[historyIndex];
+            }
+        }
+        if(e.key === "ArrowDown"){
+            if(historyIndex < history.length-1){
+                historyIndex++;
+                input.value = history[historyIndex];
+            }
+        }
+    });
+}
+
+function processCommand(cmd){
+    print("> " + cmd);
+
+    const args = cmd.split(" ");
+
+    switch(args[0]){
+
+        case "help":
+            print("Komutlar: help, clear, time, date, calc, echo, hack, theme, ai, base64, unlock");
+            break;
+
+        case "clear":
+            terminal.innerHTML="";
+            break;
+
+        case "time":
+            print(new Date().toLocaleTimeString());
+            break;
+
+        case "date":
+            print(new Date().toLocaleDateString());
+            break;
+
+        case "calc":
+            try{
+                print(eval(args.slice(1).join(" ")));
+            }catch{
+                print("Hatalı işlem.");
+            }
+            break;
+
+        case "echo":
+            print(args.slice(1).join(" "));
+            break;
+
+        case "theme":
+            document.body.style.color = args[1] || "#00ffcc";
+            break;
+
+        case "hack":
+            fakeHack();
+            break;
+
+        case "ai":
+            print("AI Stability: " + Math.floor(Math.random()*100) + "%");
+            break;
+
+        case "base64":
+            print("Z2l6bGkgbWVzYWogYnVyYWRhLg==");
+            break;
+
+        case "unlock":
+            if(args[1] === "2032"){
+                print("SYSTEM UNLOCKED", "glitch");
+                spawnSecret();
+            }else{
+                print("Erişim reddedildi.");
+            }
+            break;
+
+        default:
+            print("Bilinmeyen komut.");
+    }
+
+    newInput();
+}
+
+function fakeHack(){
+    const bar = document.createElement("div");
+    bar.className="progress";
+    terminal.appendChild(bar);
+    let i=0;
+    const interval = setInterval(()=>{
+        i+=5;
+        bar.style.width=i+"%";
+        if(i>=100){
+            clearInterval(interval);
+            print("Target accessed.");
+        }
+    },100);
+}
+
+function spawnSecret(){
+    print("Hidden node activated...");
+    setTimeout(()=>{
+        print("NODE IP: 172.16.203.32");
+    },1000);
+}
+
+function cpuMonitor(){
+    document.getElementById("cpu").innerText=Math.floor(Math.random()*100);
+    document.getElementById("ram").innerText=Math.floor(Math.random()*100);
+}
+setInterval(cpuMonitor,1000);
+
+print("Future System 2032 Initialized...");
+print("Type 'help' to list commands.");
+newInput();
+
+
+// Konami Code
+let keys=[];
+const code="ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba";
+document.addEventListener("keydown", e=>{
+    keys.push(e.key);
+    if(keys.join("").includes(code)){
+        print("KONAMI UNLOCKED", "glitch");
+    }
+});
+
+// Ctrl+Shift+F secret
+document.addEventListener("keydown", e=>{
+    if(e.ctrlKey && e.shiftKey && e.key==="F"){
+        print("CLASSIFIED ACCESS GRANTED", "glitch");
+    }
+});
+
+</script>
+
+</body>
+</html>
