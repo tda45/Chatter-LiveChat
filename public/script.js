@@ -14,23 +14,36 @@ const currentUser = document.getElementById("currentUser");
 
 let username = null;
 
+// Hata mesajı alanı oluştur
+let nameError = document.createElement("div");
+nameError.style.color = "red";
+nameError.style.marginTop = "8px";
+usernameInput.parentNode.appendChild(nameError);
+
 joinBtn.onclick = () => {
     const name = usernameInput.value.trim();
     if (!name) {
-        alert("Kullanıcı adı gir");
+        nameError.textContent = "Kullanıcı adı gir";
         return;
     }
 
+    socket.emit("check_username", name);
+};
+
+socket.on("username_taken", () => {
+    nameError.textContent = "Bu İsim Zaten Kullanımda Başka Bir Kullanıcı Adı Gir...";
+});
+
+socket.on("join_success", (name) => {
     username = name;
     currentUser.textContent = username;
-
-    socket.emit("join", username);
+    nameError.textContent = "";
 
     loginScreen.classList.add("hidden");
     chatScreen.classList.remove("hidden");
 
     messageInput.focus();
-};
+});
 
 sendBtn.onclick = sendMessage;
 

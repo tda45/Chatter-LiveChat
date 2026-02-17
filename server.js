@@ -21,18 +21,23 @@ function time() {
 io.on("connection", (socket) => {
     console.log("Bağlandı:", socket.id);
 
-    socket.on("join", (username) => {
-        users[socket.id] = username;
+    // 🔥 Kullanıcı adı kontrol sistemi
+    socket.on("check_username", (username) => {
 
-        socket.emit("system", {
-            text: `Hoş geldin ${username}`,
-            time: time()
-        });
+        const nameExists = Object.values(users).includes(username);
 
-        socket.broadcast.emit("system", {
-            text: `${username} sohbete katıldı`,
-            time: time()
-        });
+        if (nameExists) {
+            socket.emit("username_taken");
+        } else {
+            users[socket.id] = username;
+
+            socket.emit("join_success", username);
+
+            socket.broadcast.emit("system", {
+                text: `${username} sohbete katıldı`,
+                time: time()
+            });
+        }
     });
 
     socket.on("chat", (msg) => {
