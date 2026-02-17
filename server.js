@@ -21,20 +21,25 @@ function time() {
 io.on("connection", (socket) => {
     console.log("Bağlandı:", socket.id);
 
-    // 🔥 Kullanıcı adı kontrol sistemi
+    // 🔥 Kullanıcı adı kontrol sistemi (BÜYÜK/KÜÇÜK HARF DUYARSIZ)
     socket.on("check_username", (username) => {
 
-        const nameExists = Object.values(users).includes(username);
+        if (!username) return;
+
+        const cleanName = username.trim().toLowerCase();
+
+        const nameExists = Object.values(users)
+            .some(u => u.toLowerCase() === cleanName);
 
         if (nameExists) {
             socket.emit("username_taken");
         } else {
-            users[socket.id] = username;
+            users[socket.id] = username.trim(); // Orijinal hali saklanır
 
-            socket.emit("join_success", username);
+            socket.emit("join_success", username.trim());
 
             socket.broadcast.emit("system", {
-                text: `${username} sohbete katıldı`,
+                text: `${username.trim()} sohbete katıldı`,
                 time: time()
             });
         }
