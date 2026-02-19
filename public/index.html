@@ -10,6 +10,20 @@
 </head>
 <body>
 
+<!-- MOBİL ENGEL KONTROLÜ -->
+<script>
+(function() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    if (/android/i.test(ua) ||
+        /iPad|iPhone|iPod/.test(ua) ||
+        /Tablet/i.test(ua)) {
+
+        window.location.href = "/engel.html";
+    }
+})();
+</script>
+
 <!-- GİRİŞ EKRANI -->
 <div id="loginScreen" class="login-screen">
     <div class="login-box">
@@ -38,6 +52,7 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="script.js"></script>
+
 <script>
 document.addEventListener("keydown", function(e){
     if(e.ctrlKey && e.shiftKey && e.key === "X"){
@@ -45,40 +60,36 @@ document.addEventListener("keydown", function(e){
     }
 });
 </script>
+
 <script>
 document.addEventListener("keydown", function(e){
 
-    // Secret sayfa
     if(e.ctrlKey && e.shiftKey && e.key === "X"){
         window.location.href = "secret.html";
     }
 
-    // Minecraft sayfa
     if(e.ctrlKey && e.shiftKey && e.key === "M"){
         window.location.href = "minecraft.html";
     }
 
-     // Future sayfa
-     if(e.ctrlKey && e.shiftKey && e.key === "F"){
+    if(e.ctrlKey && e.shiftKey && e.key === "F"){
         window.location.href = "future.html";
     }
 
-        // Origin sayfa
-     if(e.ctrlKey && e.shiftKey && e.key === "O"){
-         window.location.href = "origin.html"; 
+    if(e.ctrlKey && e.shiftKey && e.key === "O"){
+        window.location.href = "origin.html"; 
     }     
-    
+
     if(e.ctrlKey && e.shiftKey && e.key === "K"){
-         window.location.href = "origin-voice.html"; 
+        window.location.href = "origin-voice.html"; 
     }
 
     if(e.ctrlKey && e.shiftKey && e.key === "R"){
-         window.location.href = "readme.html"; 
+        window.location.href = "readme.html"; 
     }
 
 });
 </script>
-
 
 </body>
 </html>
